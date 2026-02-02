@@ -9,6 +9,7 @@ import AutoFitLines from "../components/AutoFitLines/AutoFitLines";
 import Button from "../components/Button";
 import Counter from "../components/Counter/Counter";
 import Layout from "../components/Layout/Layout";
+import { printPhoto } from "../services/printService";
 import { useSettingsStore } from "../store/useSettingsStore";
 
 export default function TakePhoto({
@@ -112,12 +113,29 @@ export default function TakePhoto({
         setIsSelectingPrints(true);
     }
 
+    async function getImageToPrint() {
+        // if (!printImageRef.current) return;
+
+        // const canvas = await html2canvas(printImageRef.current);
+        // const imgDataUrl = canvas.toDataURL("image/png");
+        const imgDataUrl = imageToPrint;
+
+        return imgDataUrl;
+    }
+
     function printCopies() {
         setIsSelectingPrints(false);
         setSlideDown(true);
         setIsPrinting(true);
 
-        console.log("PRINTING", copiesToPrint, imageToPrint);
+        getImageToPrint().then((imgDataUrl) => {
+            if (!imgDataUrl) return;
+
+            console.log("imgDataUrl:", imgDataUrl);
+            printPhoto(imgDataUrl, copiesToPrint);
+        });
+
+        // console.log("PRINTING", copiesToPrint, imageToPrint);
 
         setTimeout(() => {
             setIsPrinting(false);
