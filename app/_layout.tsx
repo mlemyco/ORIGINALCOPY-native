@@ -3,7 +3,7 @@ import { JetBrainsMono_700Bold } from "@expo-google-fonts/jetbrains-mono/700Bold
 import { BlurView } from "expo-blur";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StatusBar, StyleSheet, View } from "react-native";
 import Settings from "./components/Settings/Settings";
 import "./globals.css";
 import { useSettingsStore } from "./store/useSettingsStore";
@@ -43,47 +43,50 @@ export default function RootLayout() {
     if (!fontsLoaded) return null;
 
     return (
-        <View
-            className={`w-screen h-screen ${settings.lightMode ? "bg-white" : "bg-bgColor"}`}
-        >
-            <Image
-                source={require("./assets/chrome-star-1.png")}
-                style={[styles.star, styles.bigStar, styles.star1]}
-            />
-            <Image
-                source={require("./assets/chrome-star-1.png")}
-                style={[styles.star, styles.bigStar, styles.star2]}
-            />
-            <Image
-                source={require("./assets/chrome-star-2.png")}
-                style={[styles.star, styles.bigStar, styles.star3]}
-            />
-            <Image
-                source={require("./assets/chrome-star-2.png")}
-                style={[styles.star, styles.bigStar, styles.star4]}
-            />
+        <>
+            <StatusBar hidden={true} />
+            <View
+                className={`w-screen h-screen ${settings.lightMode ? "bg-white" : "bg-bgColor"}`}
+            >
+                <Image
+                    source={require("./assets/chrome-star-1.png")}
+                    style={[styles.star, styles.bigStar, styles.star1]}
+                />
+                <Image
+                    source={require("./assets/chrome-star-1.png")}
+                    style={[styles.star, styles.bigStar, styles.star2]}
+                />
+                <Image
+                    source={require("./assets/chrome-star-2.png")}
+                    style={[styles.star, styles.bigStar, styles.star3]}
+                />
+                <Image
+                    source={require("./assets/chrome-star-2.png")}
+                    style={[styles.star, styles.bigStar, styles.star4]}
+                />
 
-            <BlurView
-                intensity={90}
-                tint="systemUltraThinMaterialDark"
-                style={StyleSheet.absoluteFill}
-            />
+                <BlurView
+                    intensity={90}
+                    tint="systemUltraThinMaterialDark"
+                    style={StyleSheet.absoluteFill}
+                />
 
-            <Image
-                source={require("./assets/grain.png")}
-                className="absolute w-screen h-screen opacity-[0.1] pointer-events-none"
-            />
+                <Image
+                    source={require("./assets/grain.png")}
+                    className="absolute w-screen h-screen opacity-[0.1] pointer-events-none"
+                />
 
-            <Stack
-                screenOptions={{
-                    headerShown: false,
-                    animation: "none",
-                    contentStyle: { backgroundColor: "transparent" },
-                }}
-            />
+                <Stack
+                    screenOptions={{
+                        headerShown: false,
+                        animation: "none",
+                        contentStyle: { backgroundColor: "transparent" },
+                    }}
+                />
 
-            <Settings />
-        </View>
+                <Settings />
+            </View>
+        </>
     );
 }
 
