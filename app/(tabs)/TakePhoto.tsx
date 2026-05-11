@@ -9,7 +9,7 @@ import AutoFitLines from "../components/AutoFitLines/AutoFitLines";
 import Button from "../components/Button";
 import Counter from "../components/Counter/Counter";
 import Layout from "../components/Layout/Layout";
-import { printPhoto } from "../services/printService";
+import { printAndSavePhoto } from "../services/printService";
 import { useSettingsStore } from "../store/useSettingsStore";
 
 export default function TakePhoto({
@@ -132,7 +132,7 @@ export default function TakePhoto({
             if (!imgDataUrl) return;
 
             console.log("imgDataUrl:", imgDataUrl);
-            printPhoto(imgDataUrl, copiesToPrint);
+            printAndSavePhoto(imgDataUrl, copiesToPrint);
         });
 
         // console.log("PRINTING", copiesToPrint, imageToPrint);
