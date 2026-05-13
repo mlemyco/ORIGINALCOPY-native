@@ -17,10 +17,10 @@ import {
 } from "react-native";
 import FadeOutComponent from "../Animated/FadeOutComponent";
 import SpinClockwiseComponent from "../Animated/SpinClockwiseComponent";
-import WindowOpenComponent from "../Animated/WindowOpenComponent";
 import Button from "../Button";
 import CloseButton from "../CloseButton/CloseButton";
 import Layout from "../Layout/Layout";
+import Modal from "../Modal";
 
 const Settings = () => {
     const SETTINGS_PASSWORD = process.env.EXPO_PUBLIC_SETTINGS_PASSWORD;
@@ -202,6 +202,13 @@ const Settings = () => {
         }));
     }
 
+    function toggleValidateOrderNumber(validateOrderNumber: boolean) {
+        setSettings((prevSettings) => ({
+            ...prevSettings,
+            validateOrderNumber: validateOrderNumber,
+        }));
+    }
+
     function resetSettings() {
         // document.body.classList.toggle("light-mode", defaultSettings.lightMode);
         setSettings(defaultSettings);
@@ -227,296 +234,288 @@ const Settings = () => {
 
     return (
         <>
-            {/* <Modal
-                visible={settingsOpen}
-                onDismiss={closeSettingsModal}
-                animationType="slide"
-                transparent
-            > */}
-            {settingsOpen && (
-                <WindowOpenComponent toWidth={650} toHeight={750}>
-                    <View style={styles.modal}>
-                        {isAuthenticated ? (
-                            <View className="h-full items-center justify-between">
-                                <Text className="text-h2 font-normal">
-                                    SETTINGS
-                                </Text>
+            <Modal
+                modalOpen={settingsOpen}
+                onClose={() => {
+                    toggleSettingsModal(false);
+                    closeSettingsModal();
+                }}
+                toWidth={650}
+                toHeight={750}
+            >
+                {isAuthenticated ? (
+                    <View className="h-full items-center justify-between">
+                        <Text className="text-h2 font-normal">SETTINGS</Text>
 
-                                <View style={styles.modalContent}>
-                                    <View className="flex-1 gap-3">
-                                        {/* ADD AND DELETE LAYOUT DIMENSIONS */}
-                                        <View className="flex-row items-center">
-                                            <View style={styles.icon}>
-                                                <FontAwesome6
-                                                    name="image-portrait"
-                                                    size={iconSize}
-                                                    color="black"
-                                                />
-                                            </View>
+                        <View style={styles.modalContent}>
+                            <View className="flex-1 gap-3">
+                                {/* ADD AND DELETE LAYOUT DIMENSIONS */}
+                                <View className="flex-row items-center">
+                                    <View style={styles.icon}>
+                                        <FontAwesome6
+                                            name="image-portrait"
+                                            size={iconSize}
+                                            color="black"
+                                        />
+                                    </View>
 
-                                            {/* LAYOUTS LIST */}
-                                            <View className="flex-1 flex-row flex-wrap gap-y-[10px] mr-[25px]">
-                                                {settings.layouts
-                                                    .sort(
-                                                        // sort layouts by rows then columns
-                                                        (
-                                                            a: [number, number],
-                                                            b: [number, number],
-                                                        ) => {
-                                                            return (
-                                                                a[0] - b[0] ||
-                                                                a[1] - b[1]
-                                                            );
-                                                        },
-                                                    )
-                                                    .map((layout) => {
-                                                        return (
-                                                            <Pressable
-                                                                style={
-                                                                    styles.layoutOption
-                                                                }
-                                                                key={`${layout[0]}x${layout[1]}`}
-                                                                onPress={() => {
-                                                                    removeLayout(
-                                                                        layout,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <Text className="font-mono-normal">{`${layout[0]} x ${layout[1]}`}</Text>
-                                                            </Pressable>
-                                                        );
-                                                    })}
-
-                                                {addingLayout ? (
-                                                    <TextInput
-                                                        maxLength={1}
-                                                        keyboardType="numeric"
-                                                        autoFocus
-                                                        onBlur={
-                                                            handleUnfocusNewLayout
-                                                        }
-                                                        onChangeText={
-                                                            handleNewLayoutChange
-                                                        }
-                                                        value={newLayoutValue}
-                                                    />
-                                                ) : (
+                                    {/* LAYOUTS LIST */}
+                                    <View className="flex-1 flex-row flex-wrap gap-y-[10px] mr-[25px]">
+                                        {settings.layouts
+                                            .sort(
+                                                // sort layouts by rows then columns
+                                                (
+                                                    a: [number, number],
+                                                    b: [number, number],
+                                                ) => {
+                                                    return (
+                                                        a[0] - b[0] ||
+                                                        a[1] - b[1]
+                                                    );
+                                                },
+                                            )
+                                            .map((layout) => {
+                                                return (
                                                     <Pressable
                                                         style={
                                                             styles.layoutOption
                                                         }
-                                                        onPress={() =>
-                                                            setAddingLayout(
-                                                                true,
-                                                            )
-                                                        }
+                                                        key={`${layout[0]}x${layout[1]}`}
+                                                        onPress={() => {
+                                                            removeLayout(
+                                                                layout,
+                                                            );
+                                                        }}
                                                     >
-                                                        <FontAwesome6 name="plus" />
+                                                        <Text className="font-mono-normal">{`${layout[0]} x ${layout[1]}`}</Text>
                                                     </Pressable>
-                                                )}
-                                            </View>
-                                        </View>
+                                                );
+                                            })}
 
-                                        {/* TOGGLE SETTINGS */}
-                                        <View className="gap-2">
-                                            <View
-                                                style={styles.toggleOptionRow}
+                                        {addingLayout ? (
+                                            <TextInput
+                                                maxLength={1}
+                                                keyboardType="numeric"
+                                                autoFocus
+                                                onBlur={handleUnfocusNewLayout}
+                                                onChangeText={
+                                                    handleNewLayoutChange
+                                                }
+                                                value={newLayoutValue}
+                                            />
+                                        ) : (
+                                            <Pressable
+                                                style={styles.layoutOption}
+                                                onPress={() =>
+                                                    setAddingLayout(true)
+                                                }
                                             >
-                                                <View
-                                                    style={styles.toggleOption}
-                                                >
-                                                    <View style={styles.icon}>
-                                                        <Ionicons
-                                                            name="sunny"
-                                                            size={iconSize}
-                                                            color="black"
-                                                        />
-                                                    </View>
-                                                    <SwitchWrapper>
-                                                        <Switch
-                                                            value={
-                                                                settings.lightMode
-                                                            }
-                                                            onValueChange={() =>
-                                                                toggleLightMode(
-                                                                    !settings.lightMode,
-                                                                )
-                                                            }
-                                                        />
-                                                    </SwitchWrapper>
-                                                </View>
+                                                <FontAwesome6 name="plus" />
+                                            </Pressable>
+                                        )}
+                                    </View>
+                                </View>
 
-                                                <View
-                                                    style={styles.toggleOption}
-                                                >
-                                                    <View style={styles.icon}>
-                                                        <Feather
-                                                            name={`volume-${
-                                                                settings.isMuted
-                                                                    ? "x"
-                                                                    : "2"
-                                                            }`}
-                                                            size={iconSize}
-                                                            color="black"
-                                                        />
-                                                    </View>
-                                                    <SwitchWrapper>
-                                                        <Switch
-                                                            value={
-                                                                !settings.isMuted
-                                                            }
-                                                            onValueChange={() =>
-                                                                toggleIsMuted(
-                                                                    !settings.isMuted,
-                                                                )
-                                                            }
-                                                        />
-                                                    </SwitchWrapper>
-                                                </View>
-                                            </View>
-
-                                            <View
-                                                style={styles.toggleOptionRow}
-                                            >
-                                                <View
-                                                    style={styles.toggleOption}
-                                                >
-                                                    <View style={styles.icon}>
-                                                        <AntDesign
-                                                            name="star"
-                                                            size={iconSize}
-                                                            color="black"
-                                                        />
-                                                    </View>
-                                                    <SwitchWrapper>
-                                                        <Switch
-                                                            value={
-                                                                settings.starsVisible
-                                                            }
-                                                            onValueChange={() =>
-                                                                toggleStarsVisible(
-                                                                    !settings.starsVisible,
-                                                                )
-                                                            }
-                                                        />
-                                                    </SwitchWrapper>
-                                                </View>
-
-                                                <View
-                                                    style={styles.toggleOption}
-                                                >
-                                                    <View style={styles.icon}>
-                                                        <FontAwesome5
-                                                            name="arrows-alt-v"
-                                                            size={iconSize}
-                                                            color="black"
-                                                        />
-                                                    </View>
-                                                    <SwitchWrapper>
-                                                        <Switch
-                                                            value={
-                                                                settings.isFloating
-                                                            }
-                                                            onValueChange={() =>
-                                                                toggleFloatingStars(
-                                                                    !settings.isFloating,
-                                                                )
-                                                            }
-                                                        />
-                                                    </SwitchWrapper>
-                                                </View>
-                                            </View>
-                                        </View>
-
-                                        {/* MAX COPIES SETTING */}
-                                        <View style={styles.settingsOption}>
+                                {/* TOGGLE SETTINGS */}
+                                <View className="gap-2">
+                                    <View style={styles.toggleOptionRow}>
+                                        <View style={styles.toggleOption}>
                                             <View style={styles.icon}>
-                                                <FontAwesome6
-                                                    name="copy"
+                                                <Ionicons
+                                                    name="sunny"
                                                     size={iconSize}
                                                     color="black"
                                                 />
                                             </View>
-                                            <TextInput
-                                                style={styles.settingsInput}
-                                                keyboardType="numeric"
-                                                // value={settings.maxCopies.toString()}
-                                                placeholder={settings.maxCopies.toString()}
-                                                onChangeText={
-                                                    handleMaxCopiesChange
-                                                }
-                                            />
+                                            <SwitchWrapper>
+                                                <Switch
+                                                    value={settings.lightMode}
+                                                    onValueChange={() =>
+                                                        toggleLightMode(
+                                                            !settings.lightMode,
+                                                        )
+                                                    }
+                                                />
+                                            </SwitchWrapper>
                                         </View>
 
-                                        {/* COUNTDOWN SETTING */}
-                                        <View style={styles.settingsOption}>
+                                        <View style={styles.toggleOption}>
                                             <View style={styles.icon}>
-                                                <FontAwesome6
-                                                    name="clock"
+                                                <Feather
+                                                    name={`volume-${
+                                                        settings.isMuted
+                                                            ? "x"
+                                                            : "2"
+                                                    }`}
                                                     size={iconSize}
                                                     color="black"
                                                 />
                                             </View>
-                                            <TextInput
-                                                style={styles.settingsInput}
-                                                keyboardType="numeric"
-                                                // value={settings.countdownValue.toString()}
-                                                placeholder={settings.countdownValue.toString()}
-                                                onChangeText={
-                                                    handleCountdownValueChange
-                                                }
-                                            />
+                                            <SwitchWrapper>
+                                                <Switch
+                                                    value={!settings.isMuted}
+                                                    onValueChange={() =>
+                                                        toggleIsMuted(
+                                                            !settings.isMuted,
+                                                        )
+                                                    }
+                                                />
+                                            </SwitchWrapper>
                                         </View>
                                     </View>
 
-                                    {/* LAYOUT PRINT SETTINGS */}
-                                    <View className="">
-                                        <Layout
-                                            dimensions={[1, 1]}
-                                            imageDimension={250}
-                                            isSelected
-                                            headingText={
-                                                <View className="gap-2">
-                                                    {settings.logoImg ? (
-                                                        <View className="relative h-9 w-full">
-                                                            <Image
-                                                                source={{
-                                                                    uri: settings.logoImg,
-                                                                }}
-                                                                className="h-full mx-auto grayscale"
-                                                            />
-                                                            <CloseButton
-                                                                closeFn={
-                                                                    removeLogoImg
-                                                                }
-                                                            />
-                                                        </View>
-                                                    ) : (
-                                                        <TextInput
-                                                            placeholder={
-                                                                settings.logoText
-                                                            }
-                                                            // value={
-                                                            //     settings.logoText
-                                                            // }
-                                                            onChangeText={
-                                                                handleLogoTextChange
-                                                            }
-                                                        />
-                                                    )}
+                                    <View style={styles.toggleOptionRow}>
+                                        <View style={styles.toggleOption}>
+                                            <View style={styles.icon}>
+                                                <AntDesign
+                                                    name="star"
+                                                    size={iconSize}
+                                                    color="black"
+                                                />
+                                            </View>
+                                            <SwitchWrapper>
+                                                <Switch
+                                                    value={
+                                                        settings.starsVisible
+                                                    }
+                                                    onValueChange={() =>
+                                                        toggleStarsVisible(
+                                                            !settings.starsVisible,
+                                                        )
+                                                    }
+                                                />
+                                            </SwitchWrapper>
+                                        </View>
 
-                                                    {!settings.logoImg && (
-                                                        <>
-                                                            <View className="add-file flex-none">
-                                                                <Feather
-                                                                    name="file-plus"
-                                                                    size={
-                                                                        iconSize
-                                                                    }
-                                                                    color="black"
-                                                                />
-                                                            </View>
-                                                            {/* <input
+                                        <View style={styles.toggleOption}>
+                                            <View style={styles.icon}>
+                                                <FontAwesome5
+                                                    name="arrows-alt-v"
+                                                    size={iconSize}
+                                                    color="black"
+                                                />
+                                            </View>
+                                            <SwitchWrapper>
+                                                <Switch
+                                                    value={settings.isFloating}
+                                                    onValueChange={() =>
+                                                        toggleFloatingStars(
+                                                            !settings.isFloating,
+                                                        )
+                                                    }
+                                                />
+                                            </SwitchWrapper>
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.toggleOptionRow}>
+                                        <View style={styles.toggleOption}>
+                                            <View style={styles.icon}>
+                                                <FontAwesome6
+                                                    name="ticket"
+                                                    size={iconSize}
+                                                    color="black"
+                                                />
+                                            </View>
+                                            <SwitchWrapper>
+                                                <Switch
+                                                    value={
+                                                        settings.validateOrderNumber
+                                                    }
+                                                    onValueChange={() =>
+                                                        toggleValidateOrderNumber(
+                                                            !settings.validateOrderNumber,
+                                                        )
+                                                    }
+                                                />
+                                            </SwitchWrapper>
+                                        </View>
+                                    </View>
+                                </View>
+
+                                {/* MAX COPIES SETTING */}
+                                <View style={styles.settingsOption}>
+                                    <View style={styles.icon}>
+                                        <FontAwesome6
+                                            name="copy"
+                                            size={iconSize}
+                                            color="black"
+                                        />
+                                    </View>
+                                    <TextInput
+                                        style={styles.settingsInput}
+                                        keyboardType="numeric"
+                                        // value={settings.maxCopies.toString()}
+                                        placeholder={settings.maxCopies.toString()}
+                                        onChangeText={handleMaxCopiesChange}
+                                    />
+                                </View>
+
+                                {/* COUNTDOWN SETTING */}
+                                <View style={styles.settingsOption}>
+                                    <View style={styles.icon}>
+                                        <FontAwesome6
+                                            name="clock"
+                                            size={iconSize}
+                                            color="black"
+                                        />
+                                    </View>
+                                    <TextInput
+                                        style={styles.settingsInput}
+                                        keyboardType="numeric"
+                                        // value={settings.countdownValue.toString()}
+                                        placeholder={settings.countdownValue.toString()}
+                                        onChangeText={
+                                            handleCountdownValueChange
+                                        }
+                                    />
+                                </View>
+                            </View>
+
+                            {/* LAYOUT PRINT SETTINGS */}
+                            <View className="">
+                                <Layout
+                                    dimensions={[1, 1]}
+                                    imageDimension={250}
+                                    isSelected
+                                    headingText={
+                                        <View className="gap-2">
+                                            {settings.logoImg ? (
+                                                <View className="relative h-9 w-full">
+                                                    <Image
+                                                        source={{
+                                                            uri: settings.logoImg,
+                                                        }}
+                                                        className="h-full mx-auto grayscale"
+                                                    />
+                                                    <CloseButton
+                                                        closeFn={removeLogoImg}
+                                                    />
+                                                </View>
+                                            ) : (
+                                                <TextInput
+                                                    placeholder={
+                                                        settings.logoText
+                                                    }
+                                                    // value={
+                                                    //     settings.logoText
+                                                    // }
+                                                    onChangeText={
+                                                        handleLogoTextChange
+                                                    }
+                                                />
+                                            )}
+
+                                            {!settings.logoImg && (
+                                                <>
+                                                    <View className="add-file flex-none">
+                                                        <Feather
+                                                            name="file-plus"
+                                                            size={iconSize}
+                                                            color="black"
+                                                        />
+                                                    </View>
+                                                    {/* <input
                                                             id="header-file"
                                                             className="absolute hidden"
                                                             type="file"
@@ -524,84 +523,61 @@ const Settings = () => {
                                                                 handleLogoImgChange
                                                             }
                                                         /> */}
-                                                        </>
-                                                    )}
-                                                </View>
-                                            }
-                                            labelText={
-                                                <TextInput
-                                                    placeholder={
-                                                        settings.labelText
-                                                    }
-                                                    onChangeText={
-                                                        handleLabelTextChange
-                                                    }
-                                                />
-                                            }
+                                                </>
+                                            )}
+                                        </View>
+                                    }
+                                    labelText={
+                                        <TextInput
+                                            placeholder={settings.labelText}
+                                            onChangeText={handleLabelTextChange}
                                         />
-                                    </View>
-                                </View>
-
-                                <Button handlePressFn={resetSettings} isPurple>
-                                    RESET
-                                </Button>
-
-                                <FadeOutComponent
-                                    delay={200}
-                                    style={{
-                                        width: 600,
-                                        backgroundColor: "white",
-                                        position: "absolute",
-                                        inset: 0,
-                                    }}
+                                    }
                                 />
                             </View>
-                        ) : (
-                            <TextInput
-                                className="font-mono-normal w-[300px] bg-neutral-300 py-[10px] text-center rounded-full"
-                                secureTextEntry
-                                textContentType="password"
-                                placeholder="Enter password..."
-                                onChangeText={(passwordToCheck) => {
-                                    checkPassword(passwordToCheck);
-                                }}
-                            />
-                        )}
-
-                        {/* CLOSE BUTTON */}
-                        <View className="absolute top-0 right-0 m-6 text-neutral-400">
-                            <Pressable
-                                onPress={() => {
-                                    toggleSettingsModal(false);
-                                    closeSettingsModal();
-                                }}
-                                hitSlop={10}
-                            >
-                                <Text className="text-h3">
-                                    <Feather
-                                        name="x"
-                                        size={30}
-                                        color={"gray"}
-                                    />
-                                </Text>
-                            </Pressable>
                         </View>
 
-                        {/* FADE IN FROM WHITE */}
+                        <Button handlePressFn={resetSettings} isPurple>
+                            RESET
+                        </Button>
+
                         <FadeOutComponent
-                            delay={570}
+                            delay={200}
                             style={{
+                                width: 600,
+                                backgroundColor: "white",
                                 position: "absolute",
                                 inset: 0,
-                                width: "200%",
-                                height: "200%",
-                                backgroundColor: "white",
                             }}
                         />
                     </View>
-                </WindowOpenComponent>
-            )}
-            {/* </Modal> */}
+                ) : (
+                    <TextInput
+                        className="font-mono-normal w-[300px] bg-neutral-300 py-[10px] text-center rounded-full"
+                        secureTextEntry
+                        textContentType="password"
+                        placeholder="Enter password..."
+                        onChangeText={(passwordToCheck) => {
+                            checkPassword(passwordToCheck);
+                        }}
+                    />
+                )}
+
+                {/* CLOSE BUTTON
+                <View className="absolute top-0 right-0 m-6 text-neutral-400">
+                    <Pressable
+                        onPress={() => {
+                            toggleSettingsModal(false);
+                            closeSettingsModal();
+                        }}
+                        hitSlop={10}
+                    >
+                        <Text className="text-h3">
+                            <Feather name="x" size={30} color={"gray"} />
+                        </Text>
+                    </Pressable>
+                </View> */}
+            </Modal>
 
             {/* GEAR BUTTON */}
             <View className={`absolute right-0 bottom-0 m-10 text-5xl`}>
@@ -627,23 +603,6 @@ const Settings = () => {
 export default Settings;
 
 const styles = StyleSheet.create({
-    modal: {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: [{ translateX: "-50%" }, { translateY: "-50%" }],
-        width: 650,
-        height: 750,
-        backgroundColor: "white",
-        borderRadius: 30,
-        justifyContent: "center",
-        alignItems: "center",
-        boxShadow: "0 5px 30px 10px rgba(0, 0, 0, 0.3)",
-        paddingVertical: 30,
-        paddingHorizontal: 40,
-        overflow: "hidden",
-        zIndex: 1000,
-    },
     modalContent: {
         flexDirection: "row",
     },

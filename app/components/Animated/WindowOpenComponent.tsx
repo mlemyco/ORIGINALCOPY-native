@@ -3,8 +3,8 @@ import { Animated, Easing, StyleSheet } from "react-native";
 
 const WindowOpenComponent = ({
     children,
-    toWidth = 1,
-    toHeight = 1,
+    toWidth = 650,
+    toHeight = 750,
     delay = 0,
 }: {
     children: React.ReactNode;
