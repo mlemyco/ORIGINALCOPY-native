@@ -181,6 +181,21 @@ const Settings = () => {
         }
     }
 
+    function handleFinishTimeoutChange(newFinishTimeoutText: string) {
+        const newFinishTimeout = parseInt(newFinishTimeoutText);
+        if (!isNaN(newFinishTimeout) && newFinishTimeout > 0) {
+            setSettings((prevSettings) => ({
+                ...prevSettings,
+                finishTimeout: newFinishTimeout,
+            }));
+        } else {
+            setSettings((prevSettings) => ({
+                ...prevSettings,
+                finishTimeout: defaultSettings.finishTimeout,
+            }));
+        }
+    }
+
     function toggleIsMuted(isMuted: boolean) {
         setSettings((prevSettings) => ({
             ...prevSettings,
@@ -468,6 +483,24 @@ const Settings = () => {
                                         onChangeText={
                                             handleCountdownValueChange
                                         }
+                                    />
+                                </View>
+
+                                {/* FINISH SCREEN TIMEOUT SETTING */}
+                                <View style={styles.settingsOption}>
+                                    <View style={styles.icon}>
+                                        <FontAwesome5
+                                            name="home"
+                                            size={iconSize}
+                                            color="black"
+                                        />
+                                    </View>
+                                    <TextInput
+                                        style={styles.settingsInput}
+                                        keyboardType="numeric"
+                                        // value={settings.countdownValue.toString()}
+                                        placeholder={settings.finishTimeout.toString()}
+                                        onChangeText={handleFinishTimeoutChange}
                                     />
                                 </View>
                             </View>

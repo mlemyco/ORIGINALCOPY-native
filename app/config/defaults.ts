@@ -12,6 +12,7 @@ const defaultSettings: settingsProps = {
     isMuted: false,
     maxCopies: 3,
     countdownValue: 3,
+    finishTimeout: 7,
 };
 
 export { defaultSettings };

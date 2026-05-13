@@ -144,7 +144,7 @@ export default function TakePhoto({
 
         setTimeout(() => {
             goBackToHome();
-        }, 7000);
+        }, settings.finishTimeout * 1000);
     }
 
     function goBackToHome() {

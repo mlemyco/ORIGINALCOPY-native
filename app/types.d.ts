@@ -10,6 +10,7 @@ interface settingsProps {
     isMuted: boolean;
     maxCopies: number;
     countdownValue: number;
+    finishTimeout: number;
 }
 
 export type { settingsProps };
