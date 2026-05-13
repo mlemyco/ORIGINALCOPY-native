@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import FadeInComponent from "../components/Animated/FadeInComponent";
 import FloatingComponent from "../components/Animated/FloatingComponent";
 import RollInComponent from "../components/Animated/RollInComponent";
 import Button from "../components/Button";
 import Camera from "../components/Camera";
+import OrderNumberModal from "../components/OrderNumberModal/OrderNumberModal";
 import { useSettingsStore } from "../store/useSettingsStore";
 
 const Home = ({
@@ -14,6 +16,9 @@ const Home = ({
     starsVisible: boolean;
 }) => {
     const { settings } = useSettingsStore();
+
+    const [orderNumberModalOpen, setOrderNumberModalOpen] =
+        useState<boolean>(false);
 
     return (
         <View className="w-screen h-screen justify-center items-center">
@@ -75,14 +80,28 @@ const Home = ({
                 </View>
 
                 <Button
-                    navigateOptions={{
-                        pathname: "/TakePhoto",
-                        params: { rows: 1, cols: 1 },
-                    }}
+                    handlePressFn={
+                        settings.validateOrderNumber
+                            ? () => setOrderNumberModalOpen(true)
+                            : undefined
+                    }
+                    navigateOptions={
+                        settings.validateOrderNumber
+                            ? undefined
+                            : {
+                                  pathname: "/TakePhoto",
+                                  params: { rows: 1, cols: 1 },
+                              }
+                    }
                 >
                     START HERE
                 </Button>
             </View>
+
+            <OrderNumberModal
+                modalOpen={orderNumberModalOpen}
+                setModalOpen={setOrderNumberModalOpen}
+            />
         </View>
     );
 };

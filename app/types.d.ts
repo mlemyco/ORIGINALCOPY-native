@@ -1,6 +1,7 @@
 interface settingsProps {
     isFloating: boolean;
     starsVisible: boolean;
+    validateOrderNumber: boolean;
     logoText: string; // | File;
     logoImg: string;
     labelText: string;
