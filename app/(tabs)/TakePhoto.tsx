@@ -149,7 +149,6 @@ export default function TakePhoto({
 
     function goBackToHome() {
         router.dismissAll();
-        router.replace("/");
     }
 
     return (
