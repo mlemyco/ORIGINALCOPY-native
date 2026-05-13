@@ -141,6 +141,15 @@ export default function TakePhoto({
             setIsPrinting(false);
             setDonePrinting(true);
         }, 2000);
+
+        setTimeout(() => {
+            goBackToHome();
+        }, 7000);
+    }
+
+    function goBackToHome() {
+        router.dismissAll();
+        router.replace("/");
     }
 
     return (
@@ -198,8 +207,7 @@ export default function TakePhoto({
                         <FadeInComponent duration={1500}>
                             <Button
                                 handlePressFn={() => {
-                                    router.dismissAll();
-                                    router.replace("/");
+                                    goBackToHome();
                                 }}
                             >
                                 FINISH
